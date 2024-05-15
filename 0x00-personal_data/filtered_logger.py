@@ -8,6 +8,7 @@ from typing import List
 def filter_datum(
     fields: List[str], redaction: str, message: str, separator: str
 ) -> str:
+    """Filters a log line"""
     patterns = {
         "extract": lambda x, y: r"(?P<field>{})=[^{}]*".format("|".join(x), y),
         "replace": lambda x: r"\g<field>={}".format(x),
