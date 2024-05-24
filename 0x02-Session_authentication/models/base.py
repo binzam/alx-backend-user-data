@@ -126,6 +126,7 @@ class Base():
         """Search all objects with matching attributes.
         """
         s_class = cls.__name__
+
         def _search(obj):
             if len(attributes) == 0:
                 return True
@@ -135,4 +136,3 @@ class Base():
             return True
 
         return list(filter(_search, DATA[s_class].values()))
-    
