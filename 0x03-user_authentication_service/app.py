@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A simple Flask app with user authentication features.
 """
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, redirect
 from auth import Auth
 
 
@@ -41,8 +41,18 @@ def login() -> str:
             {"email": email, "message": "logged in"}))
         response.set_cookie("session_id", session_id)
         return response
-
     abort(401)
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout() -> str:
+    """Retrieves the session ID from the request cookies and handle logout"""
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        Auth.destroy_session(user.id)
+    redirect("/")
+    abort(403)
 
 
 if __name__ == "__main__":
