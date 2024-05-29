@@ -87,6 +87,7 @@ def update_password() -> str:
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
+    # Update the password. If the token is invalid!! << fix
     try:
         AUTH.update_password(reset_token, new_password)
         response = {"email": email, "message": "Password updated"}
