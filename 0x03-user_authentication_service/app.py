@@ -3,10 +3,12 @@
 """
 from flask import Flask, jsonify, request, abort, make_response, redirect
 from auth import Auth
+from db import DB
 
 
 app = Flask(__name__)
 AUTH = Auth()
+DB = DB()
 
 
 @app.route("/", methods=["GET"])
@@ -88,7 +90,7 @@ def update_password() -> str:
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
     if reset_token is None:
-        abort(403)
+        reset_token = AUTH.get_reset_password_token()
     try:
         AUTH.update_password(reset_token, new_password)
         response = {"email": email, "message": "Password updated"}
