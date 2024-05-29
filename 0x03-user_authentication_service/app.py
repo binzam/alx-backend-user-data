@@ -91,12 +91,11 @@ def update_password() -> str:
     try:
         AUTH.update_password(reset_token, new_password)
         is_pass_updated = True
-        response = {"email": email, "message": "Password updated"}
-        return jsonify(response), 200
     except ValueError:
         is_pass_updated = False
     if not is_pass_updated:
         abort(403)
+    return jsonify({"email": email, "message": "Password updated"}), 200
 
 
 if __name__ == "__main__":
