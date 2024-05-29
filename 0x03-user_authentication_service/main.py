@@ -5,23 +5,20 @@ import requests
 
 def register_user(email: str, password: str) -> None:
     """Test user registeration"""
-    path = "{}/users".format(BASE_URL)
+    url = "{}/users".format(HOST)
     payload = {"email": email, "password": password}
-    response = requests.post(path, data=payload)
+    response = requests.post(url, data=payload)
     assert response.status_code == 200
-    assert response.json()["key"] == "expected_value", "Unexpected payload"
-
-
-
-
-
-
+    assert response.json() == {"email": email, "message": "user created"}
+    response = requests.post(url, data=payload)
+    assert response.status_code == 400
+    assert response.json() == {"message": "email already registered"}
 
 
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
-BASE_URL = "http://0.0.0.0:5000"
+HOST = "http://0.0.0.0:5000"
 
 if __name__ == "__main__":
 
