@@ -87,14 +87,14 @@ def update_password() -> str:
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
-    # Update the password. If the token is invalid!! << fix
-    if reset_token is not None:
-        try:
-            AUTH.update_password(reset_token, new_password)
-            response = {"email": email, "message": "Password updated"}
-            return jsonify(response), 200
-        except ValueError:
-            abort(403)
+    if reset_token is None:
+        abort(403)
+    try:
+        AUTH.update_password(reset_token, new_password)
+        response = {"email": email, "message": "Password updated"}
+        return jsonify(response), 200
+    except ValueError:
+        abort(403)
 
 
 if __name__ == "__main__":
