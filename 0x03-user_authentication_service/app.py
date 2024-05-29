@@ -89,8 +89,7 @@ def update_password() -> str:
     new_password = request.form.get("new_password")
     is_pass_updated = False
     try:
-        AUTH.update_password(reset_token, new_password)
-        is_pass_updated = True
+        is_pass_updated = AUTH.update_password(reset_token, new_password)
     except ValueError:
         is_pass_updated = False
     if not is_pass_updated:
