@@ -4,8 +4,7 @@
 import bcrypt
 from sqlalchemy.orm.exc import NoResultFound
 from uuid import uuid4
-from db import DB
-from user import User
+from db import DB, User
 
 
 def _hash_password(password: str) -> bytes:
@@ -70,8 +69,7 @@ class Auth:
     def destroy_session(self, user_id: int) -> None:
         """Destroy session by updating the users session to NONE"""
         if user_id:
-            self._db.update_user(user_id, session_id=None)
-        return None
+            return self._db.update_user(user_id, session_id=None)
 
     def get_reset_password_token(self, email: str) -> str:
         """Genetate and return a password reset_token"""
@@ -80,7 +78,10 @@ class Auth:
         except NoResultFound:
             raise ValueError
         reset_token = _generate_uuid()
-        self._db.update_user(user.id, reset_token=reset_token)
+        try:
+            self._db.update_user(user.id, reset_token=reset_token)
+        except (NoResultFound, ValueError):
+            raise ValueError
         return reset_token
 
     def update_password(self, reset_token: str, password: str) -> None:

@@ -2,6 +2,7 @@
 """End-to-end integration test"""
 import requests
 
+HOST = "http://0.0.0.0:5000"
 
 def register_user(email: str, password: str) -> None:
     """Test user registeration"""
@@ -31,9 +32,11 @@ def log_in(email: str, password: str) -> str:
         "password": password,
     }
     response = requests.post(url, data=payload)
+    session_id = requests.get('session_id', None)
     assert response.status_code == 200
     assert response.json() == {"email": email, "message": "logged in"}
-    return response.cookies.get("session_id")
+    assert session_id is not None
+    return session_id
 
 
 
@@ -51,7 +54,6 @@ def log_in(email: str, password: str) -> str:
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
-HOST = "http://0.0.0.0:5000"
 
 if __name__ == "__main__":
 
