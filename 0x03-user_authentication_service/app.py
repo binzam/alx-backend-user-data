@@ -29,7 +29,7 @@ def users():
         return jsonify(response), 400
 
 
-@app.route("/sessions", methods=["POST"])
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login() -> str:
     """Retrieve form data and handle user login"""
     email = request.form.get("email")
