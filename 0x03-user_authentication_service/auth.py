@@ -29,27 +29,23 @@ class Auth:
         """Adds a new user to the database."""
         try:
             self._db.find_user_by(email=email)
-            raise ValueError("User {} already exists".format(email))
         except NoResultFound:
             return self._db.add_user(email, _hash_password(password))
+        raise ValueError("User {} already exists".format(email))
 
     def valid_login(self, email: str, password: str) -> bool:
         """Check the validity of the login credentials."""
-        user = None
         try:
             user = self._db.find_user_by(email=email)
-            if user is not None:
-                return bcrypt.checkpw(
-                    password.encode("utf-8"),
-                    user.hashed_password,
-                )
         except NoResultFound:
             return False
-        return False
+        return bcrypt.checkpw(
+            password.encode("utf-8"),
+            user.hashed_password,
+        )
 
     def create_session(self, email: str) -> str:
         """Create a session for the user and return the session ID."""
-        user = None
         try:
             user = self._db.find_user_by(email=email)
         except NoResultFound:
@@ -72,9 +68,13 @@ class Auth:
 
     def destroy_session(self, user_id: int) -> None:
         """Destroy session by updating the users session to NONE"""
-        if user_id:
-            self._db.update_user(user_id, session_id=None)
-        return None
+        try:
+            user = self._db.find_user_by(id=user_id)
+        except NoResultFound:
+            return None
+        else:
+            user.session_id = None
+            return None
 
     def get_reset_password_token(self, email: str) -> str:
         """Genetate and return a password reset_token"""
