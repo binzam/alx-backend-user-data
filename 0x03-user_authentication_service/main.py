@@ -82,11 +82,9 @@ def log_in(email: str, password: str) -> str:
         "password": password,
     }
     response = requests.post(url, data=payload)
-    session_id = requests.get("session_id", None)
     assert response.status_code == 200
     assert response.json() == {"email": email, "message": "logged in"}
-    assert session_id is not None
-    return session_id
+    return response.cookies.get("session_id")
 
 
 EMAIL = "guillaume@holberton.io"
