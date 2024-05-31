@@ -59,10 +59,11 @@ class DB:
         """Update the user's attributes based on the input arguments."""
         try:
             user = self.find_user_by(id=user_id)
-            for key, value in kwargs.items():
-                if not hasattr(user, key):
-                    raise ValueError
-                setattr(user, key, value)
-            self._session.commit()
         except NoResultFound:
             raise NoResultFound
+        for key, value in kwargs.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+            else:
+                raise ValueError
+        self._session.commit()
