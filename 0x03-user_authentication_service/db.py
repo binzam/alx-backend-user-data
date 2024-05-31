@@ -60,7 +60,7 @@ class DB:
         try:
             user = self.find_user_by(id=user_id)
         except NoResultFound:
-            raise NoResultFound
+            raise ValueError
         for key, value in kwargs.items():
             if hasattr(user, key):
                 setattr(user, key, value)
