@@ -67,12 +67,10 @@ class Auth:
     def destroy_session(self, user_id: int) -> None:
         """Destroy session by updating the users session to NONE"""
         try:
-            user = self._db.find_user_by(id=user_id)
-        except NoResultFound:
+            self._db.update_user(user_id, session_id=None)
+        except ValueError:
             return None
-        else:
-            user.session_id = None
-            return None
+        return None
 
     def get_reset_password_token(self, email: str) -> str:
         """Genetate and return a password reset_token"""
@@ -92,7 +90,7 @@ class Auth:
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:
             raise ValueError()
-        new_hashed_pass = _hash_password(password)
+        new_hashed_password = _hash_password(password)
         self._db.update_user(
-            user.id, hashed_password=new_hashed_pass, reset_token=None
+            user.id, hashed_password=new_hashed_password, reset_token=None
         )
